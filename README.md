@@ -1,2 +1,2 @@
 npm start to launch
-npm run webpack to create build
+npm run build to create webpack build

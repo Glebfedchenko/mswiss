@@ -1,20 +1,27 @@
 import React, {Component, Fragment} from 'react';
-import {connect} from 'react-redux';
 import Results from '../Results/Results';
 import SearchFilter from './SearchFilter';
 import TagFilters from './TagFilters';
+import sdks from '../../redux/sdks.json';
 
+const tags = sdks.results.map(r => r.tags.map(t => t));
+const flattenedTags = [].concat(...tags);
+const uniqueTags = [...new Set(flattenedTags)];
 class Filters extends Component {
   state = {
-    // eslint-disable-next-line
-    currentlyDisplayed: this.props.results,
-    searchValue: '', // eslint-disable-next-line
-    filters: [ 'All', ...this.props.uniqueTags],
+    results: [],
+    currentlyDisplayed: [],
+    searchValue: '',
+    filters: ['All', ...uniqueTags],
     selected: 'All',
   };
 
+  componentDidMount() {
+    this.setState({results: sdks.results, currentlyDisplayed: sdks.results});
+  }
+
   onSearchInputChange = e => {
-    const {results} = this.props;
+    const {results} = this.state;
     const newlyDisplayed = results.filter(r =>
       r.title.toLowerCase().includes(e.target.value.toLowerCase()),
     );
@@ -25,7 +32,7 @@ class Filters extends Component {
   };
 
   onTagChange = tag => {
-    const {results} = this.props;
+    const {results} = this.state;
     this.setState({
       selected: tag,
       currentlyDisplayed:
@@ -56,8 +63,4 @@ class Filters extends Component {
     );
   }
 }
-
-export default connect(state => ({
-  results: state.data.results,
-  uniqueTags: state.data.uniqueTags,
-}))(Filters);
+export default Filters;

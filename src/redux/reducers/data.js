@@ -1,24 +1,25 @@
 import * as actions from '../actions/data';
 import sdks from '../sdks.json';
 
-const tags = sdks.results.map(r => r.tags.map(t => t)).flat();
-const uniqueTags = [...new Set(tags)];
+const tags = sdks.results.map(r => r.tags.map(t => t));
+const flattenedTags = [].concat(...tags);
+const uniqueTags = [...new Set(flattenedTags)];
 
 export const data = (
   state = {
     searchValue: '',
     results: sdks.results,
-    displayResults: [], // in case project is run with redux
+    displayResults: [],
     uniqueTags,
   },
   action,
 ) => {
   switch (action.type) {
-    case actions.GET_DATA: // implemented state change in case of request with axios
+    case actions.GET_DATA: // action for getting the data in case project is run with redux
       return {
         ...state,
         results: action.payload,
-        displayResults: action.payload.results, // in case project is run with redux
+        displayResults: action.payload.results,
       };
     case actions.SEARCH: // action for search in case project is run with redux
       return {
